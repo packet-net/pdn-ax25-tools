@@ -239,6 +239,16 @@ jobs:
         shell: bash
         run: cp artifacts/*.deb dist/
 
+      # Every tool is self-contained, so the runtime in each download is the SDK's that built it,
+      # and a stale runner ships old security fixes. Fail the release instead. Python is python3
+      # everywhere but Windows.
+      - name: Check the bundled .NET runtime is the latest patch
+        shell: bash
+        run: |
+          py=python3
+          command -v python3 >/dev/null || py=python
+          "$py" scripts/check-bundled-runtime.py dist/*
+
       - uses: actions/upload-artifact@v4
         with:
           name: pdn-ax25-tools-${{ matrix.rid }}
