@@ -199,9 +199,9 @@ public sealed class AxlistenFormatTests
     [Fact]
     public void Aprs_Position_Is_Summarised_With_Its_Comment_Beneath()
     {
-        var packet = Packet.Aprs.Aprs.From("M0LTE-9").To("APDW16").Via("WIDE1-1")
+        var packet = Packet.Aprs.AprsStation.From("M0LTE-9").To("APDW16").Via("WIDE1-1")
             .Position(51.4543, -0.9781).Symbol(Packet.Aprs.AprsSymbol.Car)
-            .Course(88).Speed(36).Altitude(120).Comment("Mobile").Build();
+            .CourseDegrees(88).SpeedKnots(36).AltitudeFeet(120).Comment("Mobile").Build();
 
         var output = Friendly(HeardAprs(packet));
         // APRS carries hundredths of a minute, so the longitude comes back rounded.
@@ -212,7 +212,7 @@ public sealed class AxlistenFormatTests
     [Fact]
     public void Aprs_Message_Shows_Who_It_Is_For_And_What_It_Says()
     {
-        var packet = Packet.Aprs.Aprs.From("M0LTE-9").Message("G4ABC-7", "See you at the rally").WithId("42").Build();
+        var packet = Packet.Aprs.AprsStation.From("M0LTE-9").Message("G4ABC-7", "See you at the rally").MessageId("42").Build();
 
         var output = Friendly(HeardAprs(packet));
         output.Should().Contain("APRS message to G4ABC-7 #42\n");
@@ -222,7 +222,7 @@ public sealed class AxlistenFormatTests
     [Fact]
     public void Aprs_Status_Is_Its_Text()
     {
-        var packet = Packet.Aprs.Aprs.From("M0LTE-9").Status("On the air").Build();
+        var packet = Packet.Aprs.AprsStation.From("M0LTE-9").Status("On the air").Build();
         Friendly(HeardAprs(packet)).Should().Contain("APRS status\n       On the air\n");
     }
 
@@ -238,7 +238,7 @@ public sealed class AxlistenFormatTests
     [Fact]
     public void Json_Carries_The_Decoded_Summary()
     {
-        var packet = Packet.Aprs.Aprs.From("M0LTE-9").Status("On the air").Build();
+        var packet = Packet.Aprs.AprsStation.From("M0LTE-9").Status("On the air").Build();
         using var doc = JsonDocument.Parse(new JsonFormatter().Format(HeardAprs(packet)));
         doc.RootElement.GetProperty("decoded")[0].GetString().Should().Be("APRS status");
     }

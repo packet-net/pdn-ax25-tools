@@ -38,12 +38,12 @@ internal static class AprsSummary
         switch (packet.Data)
         {
             case AprsObjectReport o:
-                Summary(lines, indent, o.IsAlive ? $"APRS object {o.Name.Trim()} {Where(o)}{from}" : $"APRS object {o.Name.Trim()} killed{from}");
+                Summary(lines, indent, !o.IsKilled ? $"APRS object {o.Name.Trim()} {Where(o)}{from}" : $"APRS object {o.Name.Trim()} killed{from}");
                 Details(lines, indent, o);
                 break;
 
             case AprsItemReport i:
-                Summary(lines, indent, i.IsAlive ? $"APRS item {i.Name.Trim()} {Where(i)}{from}" : $"APRS item {i.Name.Trim()} killed{from}");
+                Summary(lines, indent, !i.IsKilled ? $"APRS item {i.Name.Trim()} {Where(i)}{from}" : $"APRS item {i.Name.Trim()} killed{from}");
                 Details(lines, indent, i);
                 break;
 
@@ -100,7 +100,8 @@ internal static class AprsSummary
 
             case AprsTelemetryReport t:
                 var analog = string.Join(',', t.Analog.Select(a => a?.ToString(CultureInfo.InvariantCulture) ?? ""));
-                var digital = t.Digital is { } d ? " " + Convert.ToString(d, 2).PadLeft(8, '0') : "";
+                // Bits is B1 first; the line has always shown the byte, B8 first.
+                var digital = t.Bits is { } d ? " " + new string(d.Reverse().ToArray()) : "";
                 Summary(lines, indent, $"APRS telemetry #{t.Sequence} {analog}{digital}");
                 Text(lines, indent, t.Comment);
                 break;
