@@ -4,7 +4,7 @@
     <CentralPackageTransitivePinningEnabled>true</CentralPackageTransitivePinningEnabled>
   </PropertyGroup>
   <ItemGroup>
-    <PackageVersion Include="Packet.Aprs" Version="0.56.0" />
+    <PackageVersion Include="Packet.Aprs" Version="1.0.0" />
     <PackageVersion Include="Packet.Core" Version="0.54.0" />
     <PackageVersion Include="Packet.Ax25" Version="0.54.0" />
     <PackageVersion Include="Packet.Ax25.Transport.Abstractions" Version="0.54.0" />
